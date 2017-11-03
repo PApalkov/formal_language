@@ -80,6 +80,15 @@ public class Lexer {
         return null;
     }
 
+    private Token matchVariable(){
+        Pattern variablePattern = Pattern.compile("[A-Za-z]+");
+        int matched = match(variablePattern);
+        if (matched < 0)
+            return null;
+        String numberText = str.substring(index, matched);
+        return new Token(TokenType.VAR, numberText, index, matched);
+    }
+
     private Token matchSpaces() {
         int i = index;
         while (i < str.length()) {
@@ -117,6 +126,9 @@ public class Lexer {
         Token symbolToken = matchAnySymbol();
         if (symbolToken != null)
             return symbolToken;
+        Token varToken = matchVariable();
+        if (varToken != null)
+            return varToken;
         // Символ в текущей позиции не подходит ни к одной из возможных лексем - ошибка:
         throw new ParseException(
             "Unexpected character '" + str.charAt(index) + "'", index
@@ -153,5 +165,16 @@ public class Lexer {
             allTokens.add(token);
         }
         return allTokens;
+    }
+
+    public static void main(String[] args) throws ParseException {
+        String expression = "5+2 - x";
+        Lexer lexer = new Lexer(expression);
+        List<Token> allTokens = lexer.getAllTokens();
+        System.out.println(allTokens);
+        /*Parser5 parser = new Parser5(allTokens);
+        ExprNode exprTreeRoot = parser.matchExpression();
+        System.out.println(exprTreeRoot.toString());
+        System.out.println(ExprNode.eval(exprTreeRoot));*/
     }
 }

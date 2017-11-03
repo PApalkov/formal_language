@@ -6,6 +6,12 @@ public enum TokenType {
      * Пробелы
      */
     SPACES,
+
+    /**
+     * Переменная
+     */
+    VAR,
+
     /**
      * Целое число
      */
@@ -34,4 +40,6 @@ public enum TokenType {
      * Символ ')'
      */
     RPAR
+
+
 }
