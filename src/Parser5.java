@@ -2,9 +2,11 @@ import java.util.List;
 
 /**
  * Грамматический разбор грамматики
+ * программа ::= оператор+
+ * оператор ::= переменная '=' выражение
  * выражение ::= слагаемое (('+'|'-') слагаемое)*
  * слагаемое ::= множитель (('*'|'\') множитель)
- * множитель ::= (-)?ЧИСЛО | '(' выражение ')'
+ * множитель ::= (-)?ЧИСЛО |ПЕРЕМЕННАЯ| '(' выражение ')'
  * с построением дерева разбора.
  */
 public class Parser5 {
@@ -95,12 +97,26 @@ public class Parser5 {
      */
     private ExprNode matchMult() throws ParseException {
 
+
+
         Token minus = match(TokenType.SUB);
 
-
         Token number = match(TokenType.NUMBER);
+        Token variable = match(TokenType.VAR);
 
+        if (variable != null){
+
+            //учитываем минус
+            if (minus != null) {
+                ExprNode rightNode = new VariableNode(variable);
+                return  new  BinaryOpNode(null, minus, rightNode);
+            }
+
+            // Если это просто ЧИСЛО, то возвращаем узел для числа:
+            return new VariableNode(variable);
+        }
         if (number != null) {
+
             //учитываем минус
             if (minus != null) {
                 ExprNode rightNode = new NumberNode(number);
@@ -109,8 +125,8 @@ public class Parser5 {
 
             // Если это просто ЧИСЛО, то возвращаем узел для числа:
             return new NumberNode(number);
-        }
-        if (match(TokenType.LPAR) != null) {
+
+        } else if (match(TokenType.LPAR) != null) {
             // Если это открывающая скобка, то вызываем разбор выражения в скобках:
             ExprNode nested = matchExpression();
             // После него обязательно должна быть закрывающая скобка:
@@ -174,12 +190,41 @@ public class Parser5 {
         return leftNode;
     }
 
+    public StatementNode matchStatement() throws ParseException {
+        Token var = match(TokenType.VAR);
+        Token equal = match(TokenType.EQAL);
+
+        if (var == null) {
+            error("Variable expected");
+            return null;
+        }
+
+        if (equal == null) {
+            error("Equal sign expected");
+            return null;
+        }
+
+        ExprNode expression = matchExpression();
+
+        if (expression == null) {
+            error("Expression expected");
+            return null;
+        }
+
+        return new AssignStatement(var, expression);
+    }
+
+    public
+
+
+
+
     /**
      * Проверка грамматического разбора выражения
      */
 
     public static void main(String[] args) throws ParseException {
-        String expression = "- 8 + 1 * 3 + -3 / 3";
+        String expression = "- 8 + 1 * 3 + -x / 3";
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
         Parser5 parser = new Parser5(allTokens);

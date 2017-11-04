@@ -64,6 +64,8 @@ public class Lexer {
         SYMBOL_MAP.put("/", TokenType.DIV);
         SYMBOL_MAP.put("(", TokenType.LPAR);
         SYMBOL_MAP.put(")", TokenType.RPAR);
+        SYMBOL_MAP.put("=", TokenType.EQAL);
+        //todo доделать принт
     }
 
     private Token matchAnySymbol() {
@@ -87,6 +89,15 @@ public class Lexer {
             return null;
         String numberText = str.substring(index, matched);
         return new Token(TokenType.VAR, numberText, index, matched);
+    }
+
+    private Token matchEqual(){
+        Pattern equalPattern = Pattern.compile("[=]");
+        int matched = match(equalPattern);
+        if (matched < 0)
+            return null;
+        String numberText = str.substring(index, matched);
+        return new Token(TokenType.EQAL, numberText, index, matched);
     }
 
     private Token matchSpaces() {
@@ -126,6 +137,9 @@ public class Lexer {
         Token symbolToken = matchAnySymbol();
         if (symbolToken != null)
             return symbolToken;
+        Token equalToken = matchEqual();
+        if (equalToken != null)
+            return equalToken;
         Token varToken = matchVariable();
         if (varToken != null)
             return varToken;
@@ -168,7 +182,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) throws ParseException {
-        String expression = "5+2 - x";
+        String expression = "x = 5+2";
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
         System.out.println(allTokens);

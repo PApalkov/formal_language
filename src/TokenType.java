@@ -39,7 +39,11 @@ public enum TokenType {
     /**
      * Символ ')'
      */
-    RPAR
+    RPAR,
 
+    /**
+    * Символ '='
+    */
+    EQAL
 
 }
