@@ -2,7 +2,7 @@ import java.util.List;
 
 /**
  * Грамматический разбор грамматики
- * программа ::= оператор+
+ * программа ::= ( оператор ";" ) +
  * оператор ::= переменная '=' выражение
  * выражение ::= слагаемое (('+'|'-') слагаемое)*
  * слагаемое ::= множитель (('*'|'\') множитель)
@@ -190,31 +190,58 @@ public class Parser5 {
         return leftNode;
     }
 
-    public StatementNode matchStatement() throws ParseException {
+    public StatementNode matchAssignStatement() throws ParseException {
         Token var = match(TokenType.VAR);
         Token equal = match(TokenType.EQAL);
 
         if (var == null) {
-            error("Variable expected");
             return null;
         }
 
         if (equal == null) {
-            error("Equal sign expected");
             return null;
         }
 
         ExprNode expression = matchExpression();
 
         if (expression == null) {
-            error("Expression expected");
             return null;
         }
 
         return new AssignStatement(var, expression);
     }
 
-    public
+    /**
+     * тут будет происходить посик любых операторов
+     * при добавлении новых операторов, будет обновляться эта часть
+     */
+    public StatementNode matchStatement() throws ParseException {
+        StatementNode assigment = matchAssignStatement();
+
+        if (assigment != null)
+            return assigment;
+
+        return null;
+    }
+
+
+    public Program matchProgram() throws ParseException {
+        Program program = new Program();
+
+        StatementNode statement = matchStatement();
+
+        while (statement != null) {
+            program.add(statement);
+
+            Token sem = match(TokenType.SEM);
+
+            if (sem == null) error("; missed");
+
+            statement = matchStatement();
+        }
+
+        return program;
+    }
 
 
 
@@ -224,12 +251,13 @@ public class Parser5 {
      */
 
     public static void main(String[] args) throws ParseException {
-        String expression = "- 8 + 1 * 3 + -x / 3";
+
+        String expression = "x = 5 + 8; y = 7 + 2;";
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
         Parser5 parser = new Parser5(allTokens);
-        ExprNode exprTreeRoot = parser.matchExpression();
-        System.out.println(exprTreeRoot.toString());
-        System.out.println(ExprNode.eval(exprTreeRoot));
+        Program program = parser.matchProgram();
+        System.out.println(5);
+
     }
 }

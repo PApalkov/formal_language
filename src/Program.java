@@ -1,6 +1,13 @@
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Program {
-    final public LinkedList<StatementNode> program = new LinkedList<StatementNode>();
+    final public ArrayList<StatementNode> program = new ArrayList<>();
+
+    public void add(StatementNode statement){
+        program.add(statement);
+    }
+
+    public void run(){
+        //todo
+    }
 }

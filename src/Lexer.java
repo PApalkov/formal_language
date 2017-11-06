@@ -65,6 +65,7 @@ public class Lexer {
         SYMBOL_MAP.put("(", TokenType.LPAR);
         SYMBOL_MAP.put(")", TokenType.RPAR);
         SYMBOL_MAP.put("=", TokenType.EQAL);
+        SYMBOL_MAP.put(";", TokenType.SEM);
         //todo доделать принт
     }
 
@@ -80,6 +81,15 @@ public class Lexer {
             return new Token(value, symbolText, index, matched);
         }
         return null;
+    }
+
+    private Token matchSemicolon(){
+        Pattern semicolonPattern = Pattern.compile(";");
+        int matched = match(semicolonPattern);
+        if (matched < 0)
+            return null;
+        String numberText = str.substring(index, matched);
+        return new Token(TokenType.VAR, numberText, index, matched);
     }
 
     private Token matchVariable(){
@@ -143,6 +153,10 @@ public class Lexer {
         Token varToken = matchVariable();
         if (varToken != null)
             return varToken;
+        Token semToken = matchSemicolon();
+        if (semToken != null)
+            return semToken;
+
         // Символ в текущей позиции не подходит ни к одной из возможных лексем - ошибка:
         throw new ParseException(
             "Unexpected character '" + str.charAt(index) + "'", index

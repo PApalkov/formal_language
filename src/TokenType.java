@@ -44,6 +44,12 @@ public enum TokenType {
     /**
     * Символ '='
     */
-    EQAL
+    EQAL,
+
+    /**
+     * Символ ';'
+     * от англ. semicolon
+     */
+    SEM
 
 }
