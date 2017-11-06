@@ -47,6 +47,11 @@ public enum TokenType {
     EQAL,
 
     /**
+     * 'print'
+     */
+    PRINT,
+
+    /**
      * Символ ';'
      * от англ. semicolon
      */

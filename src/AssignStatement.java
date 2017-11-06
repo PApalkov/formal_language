@@ -1,6 +1,6 @@
 public class AssignStatement extends StatementNode {
-    Token name;
-    ExprNode expression;
+    public final Token name;
+    public final ExprNode expression;
 
     public AssignStatement(Token name, ExprNode expression) {
         this.name = name;

@@ -205,21 +205,43 @@ public class Parser5 {
         ExprNode expression = matchExpression();
 
         if (expression == null) {
+            error("Expression missed");
             return null;
         }
 
         return new AssignStatement(var, expression);
     }
 
+    public StatementNode matchPrintStatement() throws ParseException {
+        Token print = match(TokenType.PRINT);
+
+        if (print == null)
+            return null;
+
+
+        if (match(TokenType.LPAR) == null) error("( missing");
+
+        ExprNode expression = matchExpression();
+
+        if (match(TokenType.RPAR) == null) error(") missing");
+
+        return new PrintStatement(expression);
+
+    }
     /**
      * тут будет происходить посик любых операторов
      * при добавлении новых операторов, будет обновляться эта часть
      */
     public StatementNode matchStatement() throws ParseException {
-        StatementNode assigment = matchAssignStatement();
 
-        if (assigment != null)
-            return assigment;
+
+        StatementNode assigmentState = matchAssignStatement();
+        if (assigmentState != null)
+            return assigmentState;
+
+        StatementNode printState = matchPrintStatement();
+        if (printState != null)
+            return printState;
 
         return null;
     }
@@ -244,20 +266,18 @@ public class Parser5 {
     }
 
 
-
-
     /**
      * Проверка грамматического разбора выражения
      */
 
     public static void main(String[] args) throws ParseException {
 
-        String expression = "x = 5 + 8; y = 7 + 2;";
+        String expression = "x = 5 + 8; y = x + 2; print(x); print(y);";
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
         Parser5 parser = new Parser5(allTokens);
         Program program = parser.matchProgram();
-        System.out.println(5);
+        program.run();
 
     }
 }

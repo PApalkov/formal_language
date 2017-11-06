@@ -66,7 +66,8 @@ public class Lexer {
         SYMBOL_MAP.put(")", TokenType.RPAR);
         SYMBOL_MAP.put("=", TokenType.EQAL);
         SYMBOL_MAP.put(";", TokenType.SEM);
-        //todo доделать принт
+        SYMBOL_MAP.put("print", TokenType.PRINT);
+
     }
 
     private Token matchAnySymbol() {
@@ -89,7 +90,16 @@ public class Lexer {
         if (matched < 0)
             return null;
         String numberText = str.substring(index, matched);
-        return new Token(TokenType.VAR, numberText, index, matched);
+        return new Token(TokenType.SEM, numberText, index, matched);
+    }
+
+    private Token matchPrint(){
+        Pattern printPattern = Pattern.compile("print");
+        int matched = match(printPattern);
+        if (matched < 0)
+            return null;
+        String numberText = str.substring(index, matched);
+        return new Token(TokenType.PRINT, numberText, index, matched);
     }
 
     private Token matchVariable(){
@@ -120,6 +130,7 @@ public class Lexer {
                 break;
             }
         }
+
         if (i > index) {
             String spaces = str.substring(index, i);
             return new Token(TokenType.SPACES, spaces, index, i);
@@ -138,6 +149,9 @@ public class Lexer {
         if (index >= str.length())
             return null;
         // Перебираем все возможные типы лексем:
+        Token printToken = matchPrint();
+        if (printToken != null)
+            return printToken;
         Token spacesToken = matchSpaces();
         if (spacesToken != null)
             return spacesToken;
@@ -150,12 +164,14 @@ public class Lexer {
         Token equalToken = matchEqual();
         if (equalToken != null)
             return equalToken;
-        Token varToken = matchVariable();
-        if (varToken != null)
-            return varToken;
         Token semToken = matchSemicolon();
         if (semToken != null)
             return semToken;
+
+        //проверяется в последнюю очередь
+        Token varToken = matchVariable();
+        if (varToken != null)
+            return varToken;
 
         // Символ в текущей позиции не подходит ни к одной из возможных лексем - ошибка:
         throw new ParseException(
@@ -194,6 +210,7 @@ public class Lexer {
         }
         return allTokens;
     }
+
 
     public static void main(String[] args) throws ParseException {
         String expression = "x = 5+2";
