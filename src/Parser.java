@@ -338,7 +338,7 @@ public class Parser {
                 "y = x+1; " +
                 "print(x); " +
                 "print(y); " +
-                "if (x != y) { " +
+                "if ((x+1) != y) { " +
                     "print(y); " +
                     "z = 8; " +
                     "print(z); " +
@@ -352,20 +352,20 @@ public class Parser {
 
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
-        System.out.println(allTokens);
         Parser parser = new Parser(allTokens);
         Program program = parser.matchProgram();
         Body.run(program.statements);
     }
 
-    /*
-    public static String run(String expression) throws Exceptions.ParseException{
+
+    public static void run(String expression) throws Exceptions.ParseException{
+
         LexerAnalysis.Lexer lexer = new LexerAnalysis.Lexer(expression);
         List<LexerAnalysis.Token> allTokens = lexer.getAllTokens();
         Parser parser = new Parser(allTokens);
         Program program = parser.matchProgram();
-        return program.run();
+        Body.run(program.statements);
     }
-    */
+
 
 }

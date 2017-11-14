@@ -1,14 +1,15 @@
 import Exceptions.ParseException;
 import Expression.ExprNode;
+import Stack.PrintStack;
 import Stack.VariableStack;
 import Statement.AssignStatement;
 import Statement.IfStatement;
 import Statement.PrintStatement;
 import Statement.StatementNode;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
+
 
 public class Body {
 
@@ -17,7 +18,7 @@ public class Body {
     }
 
     public static void run(ArrayList<StatementNode> body, VariableStack stack) throws ParseException {
-
+    //public static String run(ArrayList<StatementNode> body, VariableStack stack) throws ParseException {
 
         for (StatementNode statement: body) {
             if (statement instanceof AssignStatement){
@@ -40,10 +41,8 @@ public class Body {
                 PrintStatement print = (PrintStatement)statement;
 
                 double value = ExprNode.eval(print.expression, stack);
-
-
                 System.out.println(value);
-                //return "" + value;
+                PrintStack.printStream.add("" + value);
 
 
             } else if (statement instanceof IfStatement){
@@ -57,7 +56,5 @@ public class Body {
 
 
         }
-
-        //return "";
     }
 }
