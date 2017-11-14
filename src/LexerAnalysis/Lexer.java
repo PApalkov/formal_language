@@ -1,9 +1,13 @@
+package LexerAnalysis;
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import Exceptions.ParseException;
 
 /**
  * Лексический анализатор
@@ -56,7 +60,6 @@ public class Lexer {
     }
 
     private final Map<String, TokenType> SYMBOL_MAP = new HashMap<>();
-
     {
         SYMBOL_MAP.put("+", TokenType.ADD);
         SYMBOL_MAP.put("-", TokenType.SUB);
@@ -64,10 +67,19 @@ public class Lexer {
         SYMBOL_MAP.put("/", TokenType.DIV);
         SYMBOL_MAP.put("(", TokenType.LPAR);
         SYMBOL_MAP.put(")", TokenType.RPAR);
-        SYMBOL_MAP.put("=", TokenType.EQAL);
+        SYMBOL_MAP.put("=", TokenType.ASSIGN);
         SYMBOL_MAP.put(";", TokenType.SEM);
+        SYMBOL_MAP.put(">", TokenType.MORE);
+        SYMBOL_MAP.put("<", TokenType.LESS);
+        SYMBOL_MAP.put(">=", TokenType.MORE_EQUAL);
+        SYMBOL_MAP.put("<=", TokenType.LESS_EQUAL);
+        SYMBOL_MAP.put("!=", TokenType.NOT_EQUAL);
+        SYMBOL_MAP.put("==", TokenType.EQUAL);
         SYMBOL_MAP.put("print", TokenType.PRINT);
-
+        SYMBOL_MAP.put("if", TokenType.IF);
+        SYMBOL_MAP.put("while", TokenType.WHILE);
+        SYMBOL_MAP.put("{", TokenType.LSCOBE);
+        SYMBOL_MAP.put("}", TokenType.RSCOBE);
     }
 
     private Token matchAnySymbol() {
@@ -84,23 +96,6 @@ public class Lexer {
         return null;
     }
 
-    private Token matchSemicolon(){
-        Pattern semicolonPattern = Pattern.compile(";");
-        int matched = match(semicolonPattern);
-        if (matched < 0)
-            return null;
-        String numberText = str.substring(index, matched);
-        return new Token(TokenType.SEM, numberText, index, matched);
-    }
-
-    private Token matchPrint(){
-        Pattern printPattern = Pattern.compile("print");
-        int matched = match(printPattern);
-        if (matched < 0)
-            return null;
-        String numberText = str.substring(index, matched);
-        return new Token(TokenType.PRINT, numberText, index, matched);
-    }
 
     private Token matchVariable(){
         Pattern variablePattern = Pattern.compile("[A-Za-z]+");
@@ -109,15 +104,6 @@ public class Lexer {
             return null;
         String numberText = str.substring(index, matched);
         return new Token(TokenType.VAR, numberText, index, matched);
-    }
-
-    private Token matchEqual(){
-        Pattern equalPattern = Pattern.compile("[=]");
-        int matched = match(equalPattern);
-        if (matched < 0)
-            return null;
-        String numberText = str.substring(index, matched);
-        return new Token(TokenType.EQAL, numberText, index, matched);
     }
 
     private Token matchSpaces() {
@@ -148,10 +134,8 @@ public class Lexer {
         // Мы стоим в конце строки - больше нет лексем:
         if (index >= str.length())
             return null;
+
         // Перебираем все возможные типы лексем:
-        Token printToken = matchPrint();
-        if (printToken != null)
-            return printToken;
         Token spacesToken = matchSpaces();
         if (spacesToken != null)
             return spacesToken;
@@ -161,12 +145,6 @@ public class Lexer {
         Token symbolToken = matchAnySymbol();
         if (symbolToken != null)
             return symbolToken;
-        Token equalToken = matchEqual();
-        if (equalToken != null)
-            return equalToken;
-        Token semToken = matchSemicolon();
-        if (semToken != null)
-            return semToken;
 
         //проверяется в последнюю очередь
         Token varToken = matchVariable();
@@ -218,8 +196,8 @@ public class Lexer {
         List<Token> allTokens = lexer.getAllTokens();
         System.out.println(allTokens);
         /*Parser5 parser = new Parser5(allTokens);
-        ExprNode exprTreeRoot = parser.matchExpression();
+        Expression.ExprNode exprTreeRoot = parser.matchExpression();
         System.out.println(exprTreeRoot.toString());
-        System.out.println(ExprNode.eval(exprTreeRoot));*/
+        System.out.println(Expression.ExprNode.eval(exprTreeRoot));*/
     }
 }

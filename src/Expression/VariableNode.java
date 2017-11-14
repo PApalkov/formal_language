@@ -1,3 +1,8 @@
+package Expression;
+
+import Expression.ExprNode;
+import LexerAnalysis.Token;
+
 public class VariableNode extends ExprNode {
 
 

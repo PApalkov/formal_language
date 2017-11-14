@@ -1,3 +1,7 @@
+package Expression;
+
+import LexerAnalysis.Token;
+
 public class NumberNode extends ExprNode {
 
     /**

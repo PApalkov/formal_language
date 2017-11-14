@@ -1,3 +1,9 @@
+import Exceptions.ParseException;
+import Expression.ExprNode;
+import Statement.AssignStatement;
+import Statement.PrintStatement;
+import Statement.StatementNode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +15,10 @@ public class Program {
         program.add(statement);
     }
 
-    public void run(){
+    //спросить как переделать поток вывода в jTextArea
+    //public String run() throws Exceptions.ParseException {
+    public void run() throws ParseException {
+
         Map<String, Double> var_value = new HashMap<>();
 
         for (StatementNode statement: program) {
@@ -19,15 +28,18 @@ public class Program {
                 double value = ExprNode.eval(assign.expression, var_value);
                 var_value.put(assign.name.text, value);
 
+
             } else if (statement instanceof PrintStatement){
                 PrintStatement print = (PrintStatement)statement;
 
                 double value = ExprNode.eval(print.expression, var_value);
 
-                //todo доделать поток вывода
+
                 System.out.println(value);
+                //return "" + value;
             }
         }
 
+        //return "";
     }
 }

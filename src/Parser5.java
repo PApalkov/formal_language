@@ -1,3 +1,15 @@
+import Exceptions.ParseException;
+import Expression.BinaryOpNode;
+import Expression.ExprNode;
+import Expression.NumberNode;
+import Expression.VariableNode;
+import LexerAnalysis.Lexer;
+import LexerAnalysis.Token;
+import LexerAnalysis.TokenType;
+import Statement.AssignStatement;
+import Statement.PrintStatement;
+import Statement.StatementNode;
+
 import java.util.List;
 
 /**
@@ -98,7 +110,6 @@ public class Parser5 {
     private ExprNode matchMult() throws ParseException {
 
 
-
         Token minus = match(TokenType.SUB);
 
         Token number = match(TokenType.NUMBER);
@@ -192,7 +203,7 @@ public class Parser5 {
 
     public StatementNode matchAssignStatement() throws ParseException {
         Token var = match(TokenType.VAR);
-        Token equal = match(TokenType.EQAL);
+        Token equal = match(TokenType.ASSIGN);
 
         if (var == null) {
             return null;
@@ -271,13 +282,22 @@ public class Parser5 {
      */
 
     public static void main(String[] args) throws ParseException {
-
-        String expression = "x = 5 + 8; y = x + 2; print(x); print(y);";
+        String expression = "x = 5; y = x * 5 + 6; print(x); print(y);";
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
         Parser5 parser = new Parser5(allTokens);
         Program program = parser.matchProgram();
         program.run();
-
     }
+
+    /*
+    public static String run(String expression) throws Exceptions.ParseException{
+        LexerAnalysis.Lexer lexer = new LexerAnalysis.Lexer(expression);
+        List<LexerAnalysis.Token> allTokens = lexer.getAllTokens();
+        Parser5 parser = new Parser5(allTokens);
+        Program program = parser.matchProgram();
+        return program.run();
+    }
+    */
+
 }

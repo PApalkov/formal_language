@@ -1,3 +1,6 @@
+package Statement;
+
+import Expression.ExprNode;
 
 public class PrintStatement extends StatementNode {
     public final ExprNode expression;

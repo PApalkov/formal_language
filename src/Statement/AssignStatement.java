@@ -1,3 +1,8 @@
+package Statement;
+
+import Expression.ExprNode;
+import LexerAnalysis.Token;
+
 public class AssignStatement extends StatementNode {
     public final Token name;
     public final ExprNode expression;

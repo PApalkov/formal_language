@@ -1,3 +1,5 @@
+package Exceptions;
+
 /**
  * Ошибка разбора
  */

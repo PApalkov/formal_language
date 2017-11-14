@@ -1,3 +1,7 @@
+package Expression;
+
+import LexerAnalysis.Token;
+
 public class BinaryOpNode extends ExprNode {
 
     /**
@@ -29,17 +33,6 @@ public class BinaryOpNode extends ExprNode {
      * Конструктор для листа дерева (числа)
      */
 
-    public ExprNode getLeft() {
-        return left;
-    }
-
-    public Token getOp() {
-        return op;
-    }
-
-    public ExprNode getRight() {
-        return right;
-    }
 
     @Override
     public String toString() {
