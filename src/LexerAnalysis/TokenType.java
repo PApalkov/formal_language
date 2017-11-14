@@ -70,16 +70,6 @@ public  enum TokenType {
     LESS,
 
     /**
-     * Символ '>='
-     */
-    MORE_EQUAL,
-
-    /**
-     * Символ '<='
-     */
-    LESS_EQUAL,
-
-    /**
      * Символ '!='
      */
     NOT_EQUAL,
@@ -88,16 +78,6 @@ public  enum TokenType {
      * Символ '=='
      */
     EQUAL,
-
-    /**
-     * Символ 'true'
-     */
-    TRUE,
-
-    /**
-     * Символ 'false'
-     */
-    FALSE,
 
     /**
      * Символ 'if'

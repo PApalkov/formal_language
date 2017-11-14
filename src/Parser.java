@@ -1,12 +1,10 @@
 import Exceptions.ParseException;
-import Expression.BinaryOpNode;
-import Expression.ExprNode;
-import Expression.NumberNode;
-import Expression.VariableNode;
+import Expression.*;
 import LexerAnalysis.Lexer;
 import LexerAnalysis.Token;
 import LexerAnalysis.TokenType;
 import Statement.AssignStatement;
+import Statement.IfStatement;
 import Statement.PrintStatement;
 import Statement.StatementNode;
 
@@ -19,9 +17,10 @@ import java.util.List;
  * выражение ::= слагаемое (('+'|'-') слагаемое)*
  * слагаемое ::= множитель (('*'|'\') множитель)
  * множитель ::= (-)?ЧИСЛО |ПЕРЕМЕННАЯ| '(' выражение ')'
+ *
  * с построением дерева разбора.
  */
-public class Parser5 {
+public class Parser {
 
     /**
      * Список лексем
@@ -32,7 +31,7 @@ public class Parser5 {
      */
     private int index = 0;
 
-    public Parser5(List<Token> tokens) {
+    public Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
 
@@ -158,6 +157,7 @@ public class Parser5 {
         }
     }
 
+
     /**
      * Проверка типа текущей лексемы.
      *
@@ -173,6 +173,7 @@ public class Parser5 {
         }
         return null;
     }
+
 
     /**
      * Грамматический разбор выражения по грамматике
@@ -201,6 +202,7 @@ public class Parser5 {
         return leftNode;
     }
 
+
     public StatementNode matchAssignStatement() throws ParseException {
         Token var = match(TokenType.VAR);
         Token equal = match(TokenType.ASSIGN);
@@ -223,6 +225,7 @@ public class Parser5 {
         return new AssignStatement(var, expression);
     }
 
+
     public StatementNode matchPrintStatement() throws ParseException {
         Token print = match(TokenType.PRINT);
 
@@ -237,8 +240,49 @@ public class Parser5 {
         if (match(TokenType.RPAR) == null) error(") missing");
 
         return new PrintStatement(expression);
-
     }
+
+    public LogicExpression matchLogicExpression() throws ParseException{
+
+        ExprNode left_expression = matchExpression();
+        Token op = matchAny(TokenType.MORE, TokenType.LESS,
+                            TokenType.NOT_EQUAL, TokenType.EQUAL);
+
+        ExprNode right_expression = matchExpression();
+
+        return new LogicExpression(left_expression, op, right_expression);
+    }
+
+    public StatementNode matchIfStatement() throws ParseException{
+        Token if_token = match(TokenType.IF);
+
+        if (if_token == null){
+            return null;
+        }
+
+        if (match(TokenType.LPAR) == null) error("( missing");
+
+
+        LogicExpression expression = matchLogicExpression();
+
+        if (match(TokenType.RPAR) == null) error(") missing");
+
+        IfStatement ifStatement = new IfStatement(expression);
+
+        //начинается тело оператора
+        if (match(TokenType.LSCOBE) == null) error("{ missing");
+
+        while (match(TokenType.RSCOBE) == null) {
+            StatementNode statement = matchStatement();
+
+            if (statement == null) error("} missing");
+
+            ifStatement.add(statement);
+        }
+
+        return ifStatement;
+    }
+
     /**
      * тут будет происходить посик любых операторов
      * при добавлении новых операторов, будет обновляться эта часть
@@ -247,15 +291,27 @@ public class Parser5 {
 
 
         StatementNode assigmentState = matchAssignStatement();
-        if (assigmentState != null)
+        if (assigmentState != null) {
+
+            if (matchAny(TokenType.SEM) == null) error("; missed");
             return assigmentState;
+        }
+
+        StatementNode ifStatement = matchIfStatement();
+        if (ifStatement != null)
+            return ifStatement;
 
         StatementNode printState = matchPrintStatement();
-        if (printState != null)
+        if (printState != null) {
+
+            if (matchAny(TokenType.SEM) == null) error("; missed");
             return printState;
+        }
+
 
         return null;
     }
+
 
 
     public Program matchProgram() throws ParseException {
@@ -265,11 +321,6 @@ public class Parser5 {
 
         while (statement != null) {
             program.add(statement);
-
-            Token sem = match(TokenType.SEM);
-
-            if (sem == null) error("; missed");
-
             statement = matchStatement();
         }
 
@@ -282,19 +333,36 @@ public class Parser5 {
      */
 
     public static void main(String[] args) throws ParseException {
-        String expression = "x = 5; y = x * 5 + 6; print(x); print(y);";
+
+        String expression = "x = 5; " +
+                "y = x+1; " +
+                "print(x); " +
+                "print(y); " +
+                "if (x != y) { " +
+                    "print(y); " +
+                    "z = 8; " +
+                    "print(z); " +
+                    "if (z > x) { " +
+                        "t = 46; " +
+                        "print(t); print(x); print(z);" +
+                    "} " +
+                "} " +
+                "print(x);" +
+                "print(y);";
+
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
-        Parser5 parser = new Parser5(allTokens);
+        System.out.println(allTokens);
+        Parser parser = new Parser(allTokens);
         Program program = parser.matchProgram();
-        program.run();
+        Body.run(program.statements);
     }
 
     /*
     public static String run(String expression) throws Exceptions.ParseException{
         LexerAnalysis.Lexer lexer = new LexerAnalysis.Lexer(expression);
         List<LexerAnalysis.Token> allTokens = lexer.getAllTokens();
-        Parser5 parser = new Parser5(allTokens);
+        Parser parser = new Parser(allTokens);
         Program program = parser.matchProgram();
         return program.run();
     }

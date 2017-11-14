@@ -1,11 +1,11 @@
 package Expression;
 
-import java.util.Map;
 import LexerAnalysis.TokenType;
+import Stack.VariableStack;
 
 public abstract class ExprNode {
 
-    public static double eval(ExprNode node, Map<String, Double> var_value) throws IllegalStateException {
+    public static double eval(ExprNode node, VariableStack stack) throws IllegalStateException {
 
         if (node == null) {
             return 0;
@@ -21,8 +21,8 @@ public abstract class ExprNode {
             BinaryOpNode tmp = (BinaryOpNode) node;
 
             TokenType op = tmp.op.type;
-            double leftValue = eval(tmp.left, var_value);
-            double rightValue = eval(tmp.right, var_value);
+            double leftValue = eval(tmp.left, stack);
+            double rightValue = eval(tmp.right, stack);
 
             switch (op) {
                 case ADD:
@@ -42,11 +42,13 @@ public abstract class ExprNode {
             VariableNode var = (VariableNode)node;
             String var_text = var.variable.text;
 
-            if (var_value.containsKey(var_text)) {
-                return var_value.get(var_text);
-            } else {
-                String message = var.variable.text + " is not inicialized";
+            VariableStack stack_of_var = VariableStack.findVariableTable(var_text, stack);
+
+            if (stack_of_var == null){
+                String message = var_text + " is not inicialized";
                 throw new IllegalStateException(message);
+            } else {
+                return stack_of_var.var_values.get(var_text);
             }
 
         } else {

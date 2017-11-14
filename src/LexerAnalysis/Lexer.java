@@ -67,14 +67,12 @@ public class Lexer {
         SYMBOL_MAP.put("/", TokenType.DIV);
         SYMBOL_MAP.put("(", TokenType.LPAR);
         SYMBOL_MAP.put(")", TokenType.RPAR);
+        SYMBOL_MAP.put("==", TokenType.EQUAL);
         SYMBOL_MAP.put("=", TokenType.ASSIGN);
         SYMBOL_MAP.put(";", TokenType.SEM);
         SYMBOL_MAP.put(">", TokenType.MORE);
         SYMBOL_MAP.put("<", TokenType.LESS);
-        SYMBOL_MAP.put(">=", TokenType.MORE_EQUAL);
-        SYMBOL_MAP.put("<=", TokenType.LESS_EQUAL);
         SYMBOL_MAP.put("!=", TokenType.NOT_EQUAL);
-        SYMBOL_MAP.put("==", TokenType.EQUAL);
         SYMBOL_MAP.put("print", TokenType.PRINT);
         SYMBOL_MAP.put("if", TokenType.IF);
         SYMBOL_MAP.put("while", TokenType.WHILE);
@@ -195,7 +193,7 @@ public class Lexer {
         Lexer lexer = new Lexer(expression);
         List<Token> allTokens = lexer.getAllTokens();
         System.out.println(allTokens);
-        /*Parser5 parser = new Parser5(allTokens);
+        /*Parser parser = new Parser(allTokens);
         Expression.ExprNode exprTreeRoot = parser.matchExpression();
         System.out.println(exprTreeRoot.toString());
         System.out.println(Expression.ExprNode.eval(exprTreeRoot));*/

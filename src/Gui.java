@@ -40,7 +40,7 @@ public class Gui extends JFrame{
 
                 String result;
                 try{
-                    result = Parser5.run(code);
+                    result = Parser.run(code);
                 } catch (Exceptions.ParseException ex){
                     result = ex.getMessage() + "  " + ex.index;
                 }
