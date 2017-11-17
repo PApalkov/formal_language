@@ -1,12 +1,10 @@
+import Exceptions.NotInitilizedVariable;
 import Exceptions.ParseException;
 import Expression.*;
 import LexerAnalysis.Lexer;
 import LexerAnalysis.Token;
 import LexerAnalysis.TokenType;
-import Statement.AssignStatement;
-import Statement.IfStatement;
-import Statement.PrintStatement;
-import Statement.StatementNode;
+import Statement.*;
 
 import java.util.List;
 
@@ -277,10 +275,49 @@ public class Parser {
 
             if (statement == null) error("} missing");
 
-            ifStatement.add(statement);
+            ifStatement.add_if(statement);
+        }
+
+        //Присутствует часть Else
+        if (match(TokenType.ELSE) != null) {
+            if (match(TokenType.LSCOBE) == null) error("{ missing");
+
+            while (match(TokenType.RSCOBE) == null) {
+                StatementNode statement = matchStatement();
+
+                if (statement == null) error("} missing");
+
+                ifStatement.add_else(statement);
+            }
         }
 
         return ifStatement;
+    }
+
+    public StatementNode matchSqrtStatement() throws ParseException{
+        Token sqrt_token = match(TokenType.SQRT);
+
+        if (sqrt_token == null){
+            return null;
+        }
+
+        if (match(TokenType.LPAR) == null) error("( missing");
+
+        ExprNode expression = matchExpression();
+
+        if (match(TokenType.COMMA) == null){
+            error(", missing");
+        }
+
+        Token var = match(TokenType.VAR);
+
+        if (var == null){
+            error("variable not found");
+        }
+
+        if (match(TokenType.RPAR) == null) error(") missing");
+
+        return new SqrtStatement(expression, var);
     }
 
     /**
@@ -303,9 +340,14 @@ public class Parser {
 
         StatementNode printState = matchPrintStatement();
         if (printState != null) {
-
             if (matchAny(TokenType.SEM) == null) error("; missed");
             return printState;
+        }
+
+        StatementNode sqrtState = matchSqrtStatement();
+        if (sqrtState != null) {
+            if (matchAny(TokenType.SEM) == null) error("; missed");
+            return sqrtState;
         }
 
 
@@ -332,7 +374,7 @@ public class Parser {
      * Проверка грамматического разбора выражения
      */
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, NotInitilizedVariable {
 
         String expression = "x = 5; " +
                 "y = x+1; " +
@@ -358,7 +400,7 @@ public class Parser {
     }
 
 
-    public static void run(String expression) throws Exceptions.ParseException{
+    public static void run(String expression) throws ParseException, NotInitilizedVariable{
 
         LexerAnalysis.Lexer lexer = new LexerAnalysis.Lexer(expression);
         List<LexerAnalysis.Token> allTokens = lexer.getAllTokens();

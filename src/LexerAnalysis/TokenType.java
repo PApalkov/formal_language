@@ -49,7 +49,12 @@ public  enum TokenType {
     ASSIGN,
 
     /**
-     * 'print'
+     * Символ ','
+     */
+    COMMA,
+
+    /**
+     * Ключевое слово 'print'
      */
     PRINT,
 
@@ -80,14 +85,24 @@ public  enum TokenType {
     EQUAL,
 
     /**
-     * Символ 'if'
+     * Ключевое слово 'if'
      */
     IF,
 
     /**
-     * Символ 'while'
+     * Ключевое слово 'else'
+     */
+    ELSE,
+
+    /**
+     * Ключевое слово 'while'
      */
     WHILE,
+
+    /**
+     * Ключевое слово 'sqrt'
+     */
+    SQRT,
 
     /**
      * Символ '{'

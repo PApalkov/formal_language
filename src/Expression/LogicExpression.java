@@ -1,6 +1,7 @@
 package Expression;
 
 
+import Exceptions.NotInitilizedVariable;
 import Exceptions.ParseException;
 import LexerAnalysis.Token;
 import Stack.VariableStack;
@@ -18,7 +19,7 @@ public class LogicExpression extends StatementNode {
         this.operation = operation;
     }
 
-    public boolean result(VariableStack stack) throws ParseException{
+    public boolean result(VariableStack stack) throws ParseException, NotInitilizedVariable {
 
         double left_result = ExprNode.eval(left, stack);
         double right_result = ExprNode.eval(right, stack);

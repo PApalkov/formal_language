@@ -73,8 +73,11 @@ public class Lexer {
         SYMBOL_MAP.put(">", TokenType.MORE);
         SYMBOL_MAP.put("<", TokenType.LESS);
         SYMBOL_MAP.put("!=", TokenType.NOT_EQUAL);
+        SYMBOL_MAP.put(",", TokenType.COMMA);
         SYMBOL_MAP.put("print", TokenType.PRINT);
         SYMBOL_MAP.put("if", TokenType.IF);
+        SYMBOL_MAP.put("else", TokenType.ELSE);
+        SYMBOL_MAP.put("sqrt", TokenType.SQRT);
         SYMBOL_MAP.put("while", TokenType.WHILE);
         SYMBOL_MAP.put("{", TokenType.LSCOBE);
         SYMBOL_MAP.put("}", TokenType.RSCOBE);
@@ -187,15 +190,4 @@ public class Lexer {
         return allTokens;
     }
 
-
-    public static void main(String[] args) throws ParseException {
-        String expression = "x = 5+2";
-        Lexer lexer = new Lexer(expression);
-        List<Token> allTokens = lexer.getAllTokens();
-        System.out.println(allTokens);
-        /*Parser parser = new Parser(allTokens);
-        Expression.ExprNode exprTreeRoot = parser.matchExpression();
-        System.out.println(exprTreeRoot.toString());
-        System.out.println(Expression.ExprNode.eval(exprTreeRoot));*/
-    }
 }

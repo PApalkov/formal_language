@@ -1,11 +1,13 @@
 package Expression;
 
+import Exceptions.NotInitilizedVariable;
+import LexerAnalysis.Token;
 import LexerAnalysis.TokenType;
 import Stack.VariableStack;
 
 public abstract class ExprNode {
 
-    public static double eval(ExprNode node, VariableStack stack) throws IllegalStateException {
+    public static double eval(ExprNode node, VariableStack stack) throws NotInitilizedVariable {
 
         if (node == null) {
             return 0;
@@ -39,21 +41,20 @@ public abstract class ExprNode {
 
         } else if (node instanceof VariableNode) {
 
-            VariableNode var = (VariableNode)node;
+            VariableNode var = (VariableNode) node;
             String var_text = var.variable.text;
 
             VariableStack stack_of_var = VariableStack.findVariableTable(var_text, stack);
 
-            if (stack_of_var == null){
-                String message = var_text + " is not inicialized";
-                throw new IllegalStateException(message);
+            if (stack_of_var == null) {
+                String message = "Variable " + var_text + " is not initilized";
+                throw new NotInitilizedVariable(message);
             } else {
                 return stack_of_var.var_values.get(var_text);
             }
 
         } else {
-            throw new IllegalStateException();
+            throw new NotInitilizedVariable("Error");
         }
-
     }
 }

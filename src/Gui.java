@@ -1,3 +1,5 @@
+import Exceptions.NotInitilizedVariable;
+import Exceptions.ParseException;
 import Stack.PrintStack;
 
 import javax.swing.*;
@@ -9,7 +11,7 @@ import java.awt.event.ActionEvent;
 public class Gui extends JFrame{
     private static JTextArea codeArea;
     private static JTextArea logArea;
-    private static JButton run;
+    private static JButton runButton;
     private static JButton save;
 
     public static void main(String[] args) {
@@ -23,31 +25,31 @@ public class Gui extends JFrame{
         ide.setPreferredSize(new Dimension(900,600));
         ide.setBackground(Color.GRAY);
 
-        run = getRunButton();
+        runButton = getRunButton();
         codeArea = getCodeArea();
         logArea = getLogArea();
         JScrollPane codeScrollPane = new JScrollPane(codeArea);
         JScrollPane logScrollPane = new JScrollPane(logArea);
 
 
-        JPanel topElementsPanel = new JPanel();
-        GridLayout topElementsGrid = new GridLayout(1, 2);
-        topElementsGrid.setHgap(10);
-        topElementsGrid.setVgap(10);
+        JPanel rightElementsPanel = new JPanel();
+        GridLayout rightElementsGrid = new GridLayout(2, 1);
+        rightElementsGrid.setHgap(10);
+        rightElementsGrid.setVgap(10);
 
-        topElementsPanel.setLayout(topElementsGrid);
-        topElementsPanel.add(codeScrollPane, BorderLayout.WEST);
-        topElementsPanel.add(run, BorderLayout.EAST);
+        rightElementsPanel.setLayout(rightElementsGrid);
+        rightElementsPanel.add(runButton);
+        rightElementsPanel.add(logScrollPane);
 
-        GridLayout ideGrid = new GridLayout(2, 1);
+        GridLayout ideGrid = new GridLayout(1, 2);
         ideGrid.setHgap(10);
         ideGrid.setVgap(10);
 
 
 
         ide.setLayout(ideGrid);
-        ide.add(topElementsPanel);
-        ide.add(logScrollPane);
+        ide.add(codeScrollPane);
+        ide.add(rightElementsPanel);
         ide.pack();
         ide.setVisible(true);
     }
@@ -70,8 +72,8 @@ public class Gui extends JFrame{
                         result += line + "\n";
                     }
 
-                } catch (Exceptions.ParseException ex){
-                    result = ex.getMessage() + "  " + ex.index;
+                } catch (ParseException | NotInitilizedVariable ex){
+                    result = ex.getMessage();
                 }
 
                 logArea.append(result + "\n");
@@ -79,14 +81,14 @@ public class Gui extends JFrame{
             }
         });
 
-        //run.setSize(100, 400);
         return run;
     }
 
     private static JTextArea getCodeArea(){
         JTextArea codeArea = new JTextArea();
         codeArea.setFont(new Font(".SN FS Text", Font.PLAIN, 16));
-        //codeArea.setPreferredSize(new Dimension(100, 400));
+        codeArea.setTabSize(2);
+
         Border text_border = BorderFactory.createEmptyBorder(20, 20, 20, 20);
         codeArea.setBorder(text_border);
 
